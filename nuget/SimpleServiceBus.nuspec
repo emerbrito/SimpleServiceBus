@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+    <metadata>
+        <id>SimpleServiceBus</id>
+        <version>1.0.0.0</version>
+        <title>A simple messaging library built on top of MSMQ.</title>
+        <authors>Emerson Brito</authors>
+        <owners>Emerson Brito</owners>
+        <licenseUrl>https://github.com/emerbrito/SimpleServiceBus/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/emerbrito/SimpleServiceBus</projectUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>A messaging library for publish-subscribe implementation on top of MSMQ. Supports transactional and non-transactional queues, dead letter queue and automatic retries with delay between failed attempts. Aims to provides a reliable yet very simple way to integrate applications running on the same machine or across networks.</description>
+        <summary>A messaging library for publish-subscribe implementation on top of MSMQ. Supports transactional and non-transactional queues, dead letter queue and automatic retries with delay between failed attempts.</summary>
+        <copyright>Emerson Brito (c) 2016</copyright>
+        <tags>messaging service bus msmq</tags>
+        <dependencies>
+          <dependency id="Newtonsoft.Json" version="9.0.1" />
+        </dependencies>
+        <frameworkAssemblies>
+          <frameworkAssembly assemblyName="System.Messaging" targetFramework="net46" />
+        </frameworkAssemblies>      
+    </metadata>
+    <files>
+        <file src="..\src\SimpleServiceBus\bin\Release\SimpleServiceBus.dll" target="lib\net46\SimpleServiceBus.dll" />
+    </files>
+</package>
