@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleServiceBus", "SimpleServiceBus\SimpleServiceBus.csproj", "{F81616BB-0B08-459A-8132-C133D024040C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleServiceBus.Tests", "SimpleServiceBus.Tests\SimpleServiceBus.Tests.csproj", "{9218887B-F086-476E-8465-5489BA7C5BEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F81616BB-0B08-459A-8132-C133D024040C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F81616BB-0B08-459A-8132-C133D024040C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F81616BB-0B08-459A-8132-C133D024040C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F81616BB-0B08-459A-8132-C133D024040C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9218887B-F086-476E-8465-5489BA7C5BEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9218887B-F086-476E-8465-5489BA7C5BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9218887B-F086-476E-8465-5489BA7C5BEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9218887B-F086-476E-8465-5489BA7C5BEE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
