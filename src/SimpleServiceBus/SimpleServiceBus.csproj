@@ -55,6 +55,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Exceptions\QueueAlreadyExistException.cs" />
     <Compile Include="Exceptions\QueueNotFoundException.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Infrastructure\DefaultLogger.cs" />
     <Compile Include="Infrastructure\DefaultLogManager.cs" />
     <Compile Include="Infrastructure\IQueueBuilder.cs" />

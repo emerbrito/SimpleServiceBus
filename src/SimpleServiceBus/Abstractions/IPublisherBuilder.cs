@@ -9,7 +9,9 @@ namespace SimpleServiceBus.Abstractions
     public interface IPublisherBuilder<T>
     {
 
-        IPublisherBuilder<T> AutoCreateLocalQueue();
+        IPublisherBuilder<T> AutoCreateLocalQueues();
+
+        IPublisherBuilder<T> SetAdditionalQueue(string queueName);
 
         IPublisherBuilder<T> WithLogger(ILogger logger);
 

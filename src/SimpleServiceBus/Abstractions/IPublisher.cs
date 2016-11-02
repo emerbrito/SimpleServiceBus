@@ -14,6 +14,8 @@ namespace SimpleServiceBus.Abstractions
 
         void Send(T message, string label);
 
+        void Send(T message, string label, string pattern);
+
     }
 
 }

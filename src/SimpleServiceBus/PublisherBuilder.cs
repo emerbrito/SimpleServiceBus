@@ -26,7 +26,20 @@ namespace SimpleServiceBus
 
         }
 
-        public IPublisherBuilder<T> AutoCreateLocalQueue()
+        public IPublisherBuilder<T> SetAdditionalQueue(string queueName)
+        {
+
+            if (string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException(nameof(SetAdditionalQueue));
+
+            if (!settings.AdditionalQueues.Contains(queueName))
+                settings.AdditionalQueues.Add(queueName);
+
+            return this;
+
+        }
+
+        public IPublisherBuilder<T> AutoCreateLocalQueues()
         {
             settings.CreateLocalQueues = true;
             return this;
@@ -53,6 +66,13 @@ namespace SimpleServiceBus
         {
 
             MessageQueue queue = GetMessageQueue(settings.QueueName);
+            List<MessageQueue> extraQueues = new List<MessageQueue>();
+
+            foreach (var name in settings.AdditionalQueues)
+            {
+                extraQueues.Add(GetMessageQueue(name));
+            }
+
 
             if (settings.Logger == null)
             {
@@ -60,7 +80,7 @@ namespace SimpleServiceBus
                 settings.Logger = lmanager.GetLogger(typeof(Subscriber));
             }
 
-            var publisher = new Publisher<T>(queue, settings);
+            var publisher = new Publisher<T>(queue, extraQueues, settings);
             return publisher;
 
         }
@@ -70,14 +90,19 @@ namespace SimpleServiceBus
 
 
             MessageQueue queue;
+            IQueueBuilder builder;
 
             var queuePath = QueueBuilder.TryFormatPath(queueName);
 
-            IQueueBuilder builder = QueueBuilder.New(queuePath)
+            builder = QueueBuilder.New(queuePath)
                 .WithJsonSerialization();
 
+            if (settings.UseAmbientTransactions)
+                builder.AsTransactional();
+
+
             if ((QueueBuilder.IsPrivateQueuePath(queuePath) && settings.CreateLocalQueues))
-            {
+            {                
                 queue = builder.TryCreate();
             }
             else
@@ -86,7 +111,6 @@ namespace SimpleServiceBus
             }
 
             return queue;
-
 
         }
 
