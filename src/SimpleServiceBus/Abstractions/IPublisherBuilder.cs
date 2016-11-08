@@ -13,6 +13,10 @@ namespace SimpleServiceBus.Abstractions
 
         IPublisherBuilder<T> SetAdditionalQueue(string queueName);
 
+        IPublisherBuilder<T> WithRoutingErrorQueue(string queueName);
+
+        IPublisherBuilder<T> IgnoreRoutingErrors();
+
         IPublisherBuilder<T> WithLogger(ILogger logger);
 
         IPublisherBuilder<T> UseAmbientTransaction();

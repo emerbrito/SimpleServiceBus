@@ -53,6 +53,7 @@
     <Compile Include="Abstractions\ISubscriptionBuilder.cs" />
     <Compile Include="Abstractions\ISubscriber.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Exceptions\PatternMismatchException.cs" />
     <Compile Include="Exceptions\QueueAlreadyExistException.cs" />
     <Compile Include="Exceptions\QueueNotFoundException.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

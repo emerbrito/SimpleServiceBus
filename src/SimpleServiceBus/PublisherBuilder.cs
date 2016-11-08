@@ -62,15 +62,50 @@ namespace SimpleServiceBus
 
         }
 
+        public IPublisherBuilder<T> WithRoutingErrorQueue(string queueName)
+        {
+
+            if (string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException(nameof(queueName));
+
+            if (settings.IgnorePatternMismatch)
+            {
+                throw new ArgumentException($"Properties {nameof(WithRoutingErrorQueue)} and {nameof(IgnoreRoutingErrors)} are mutually exclusive.");
+            }
+
+            settings.RoutingErrorQueueName = queueName;
+            return this;
+
+        }
+
+        public IPublisherBuilder<T> IgnoreRoutingErrors()
+        {
+
+            if(!string.IsNullOrWhiteSpace(settings.RoutingErrorQueueName))
+            {
+                throw new ArgumentException($"Properties {nameof(WithRoutingErrorQueue)} and {nameof(IgnoreRoutingErrors)} are mutually exclusive.");
+            }
+
+            settings.IgnorePatternMismatch = true;
+            return this;
+
+        }
+
         public IPublisher<T> Create()
         {
 
-            MessageQueue queue = GetMessageQueue(settings.QueueName);
+            MessageQueue routingErrorQueue = null;
+            MessageQueue queue = GetMessageQueue(settings.QueueName, settings.UseAmbientTransactions);
             List<MessageQueue> extraQueues = new List<MessageQueue>();
+
+            if(!string.IsNullOrWhiteSpace(settings.RoutingErrorQueueName))
+            {
+                routingErrorQueue = GetMessageQueue(settings.RoutingErrorQueueName, settings.UseAmbientTransactions);
+            }
 
             foreach (var name in settings.AdditionalQueues)
             {
-                extraQueues.Add(GetMessageQueue(name));
+                extraQueues.Add(GetMessageQueue(name, settings.UseAmbientTransactions));
             }
 
 
@@ -80,12 +115,12 @@ namespace SimpleServiceBus
                 settings.Logger = lmanager.GetLogger(typeof(Subscriber));
             }
 
-            var publisher = new Publisher<T>(queue, extraQueues, settings);
+            var publisher = new Publisher<T>(queue, routingErrorQueue, extraQueues, settings);
             return publisher;
 
         }
 
-        private MessageQueue GetMessageQueue(string queueName)
+        private MessageQueue GetMessageQueue(string queueName, bool transactional)
         {
 
 
@@ -97,10 +132,11 @@ namespace SimpleServiceBus
             builder = QueueBuilder.New(queuePath)
                 .WithJsonSerialization();
 
-            if (settings.UseAmbientTransactions)
+            if(transactional)
+            {
                 builder.AsTransactional();
-
-
+            }
+               
             if ((QueueBuilder.IsPrivateQueuePath(queuePath) && settings.CreateLocalQueues))
             {                
                 queue = builder.TryCreate();

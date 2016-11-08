@@ -12,11 +12,15 @@ namespace SimpleServiceBus
 
         public string QueueName { get; set; }
 
+        public string RoutingErrorQueueName { get; set; }
+
         public List<string> AdditionalQueues { get; set; } = new List<string>();
 
         public bool CreateLocalQueues { get; set; }
 
         public bool UseAmbientTransactions { get; set; }
+
+        public bool IgnorePatternMismatch { get; set; }
 
         public ILogger Logger { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using SimpleServiceBus.Abstractions;
+using SimpleServiceBus.Exceptions;
 using SimpleServiceBus.Extensions;
 using SimpleServiceBus.Serialization;
 using System;
@@ -16,16 +17,18 @@ namespace SimpleServiceBus
 
         private readonly ILogger log;
         private readonly MessageQueue mainQueue;
+        private readonly MessageQueue routingErrorQueue;
         private IEnumerable<MessageQueue> extraQueues;
         private readonly PublisherSettings settings;
 
-        internal Publisher(MessageQueue mqueue, IEnumerable<MessageQueue> extraQueues, PublisherSettings settings)
+        internal Publisher(MessageQueue mqueue, MessageQueue routingErrorQueue, IEnumerable<MessageQueue> extraQueues, PublisherSettings settings)
         {
 
             this.log = settings.Logger;
             this.mainQueue = mqueue;
             this.extraQueues = extraQueues;
             this.settings = settings;
+            this.routingErrorQueue = routingErrorQueue;
 
             if (extraQueues == null)
                 extraQueues = Enumerable.Empty<MessageQueue>();
@@ -56,9 +59,37 @@ namespace SimpleServiceBus
                 queueMessage.Label = label;
             }
 
-            foreach (var q in matchingQueues)
+            if(matchingQueues.Count() > 0)
             {
-                Send(queueMessage, q);
+
+                foreach (var q in matchingQueues)
+                {
+                    Send(queueMessage, q);
+                }
+
+            }
+            else
+            {
+
+                if (routingErrorQueue == null)
+                {
+
+                    if (settings.IgnorePatternMismatch)
+                    {
+                        log.Warn($"Pattern {pattern} didn't return any queue. {nameof(settings.IgnorePatternMismatch)} is '{settings.IgnorePatternMismatch.ToString()}'. Message will be lost.");
+                    }
+                    else
+                    {
+                        throw new PatternMismatchException(pattern);
+                    }
+
+                }
+                else
+                {
+                    log.Warn($"Pattern {pattern} didn't return any queue. Moving message to matching error queue: {routingErrorQueue.QueueName}");
+                    Send(queueMessage, routingErrorQueue);
+                }
+
             }
 
         }
