@@ -250,18 +250,28 @@ namespace SimpleServiceBus.Infrastructure
         internal static string TryFormatPath(string queue)
         {
 
-            if (queue.Contains("\\") || queue.Contains("@"))
+            if (!queue.Contains("\\") && !queue.Contains("@"))
             {
-                return queue;
+                queue = $@"private$\{queue}";
             }
 
-            return $@".\Private$\{queue}";
+            if (IsPrivateQueuePath(queue))
+            {
+                if (string.IsNullOrEmpty(GetMachineNameFromPath(queue)))
+                {
+                    queue = $@".\{queue}";
+                }
+            }
+
+            return queue;
 
         }
 
         internal static string GetMachineNameFromPath(string queuePath)
         {
 
+
+            string machineName = string.Empty;
 
             if (queuePath.StartsWith(Environment.MachineName))
             {
@@ -273,21 +283,16 @@ namespace SimpleServiceBus.Infrastructure
                 return queuePath.Substring(queuePath.IndexOf('@') + 1);
             }
                 
-            string pattern = @":(\w+)\\";
-            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-
-            Match m = regex.Match(queuePath);
-            if (m.Success)
-            {
-                return m.Groups[1].Captures[0].Value;
-            }
-
             if (queuePath.Contains("\\"))
             {
-                return queuePath.Substring(0, queuePath.IndexOf("\\"));
+                machineName = queuePath.Substring(0, queuePath.IndexOf("\\"));
+                if(machineName.ToLower().Contains("private$"))
+                {
+                    machineName = string.Empty;
+                }
             }
 
-            throw new ArgumentOutOfRangeException(nameof(queuePath), $"Unable to determine machine name from path: {queuePath}");
+            return machineName;
 
         }
 
@@ -319,11 +324,6 @@ namespace SimpleServiceBus.Infrastructure
         internal static bool IsPrivateQueuePath(string queuePath)
         {
 
-            if(!queuePath.Contains("\\") && !queuePath.Contains("@"))
-            {
-                return true;
-            }
-
             if(queuePath.ToLower().Contains("private$"))
             {
                 return true;
@@ -332,7 +332,6 @@ namespace SimpleServiceBus.Infrastructure
             return false;
 
         }
-
 
     }
 }

@@ -24,7 +24,7 @@ namespace SimpleServiceBus.Tests
         public void BuilderConfigAllSettings()
         {
             
-            string path = @".\Private$\MyQueue";
+            string path = @".\private$\MyQueue";
             string desc = "Queue description";
             var qbuilder = (QueueBuilder) QueueBuilder.New("MyQueue");
             QueueSettings config;
