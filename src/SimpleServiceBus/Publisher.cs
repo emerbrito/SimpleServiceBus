@@ -49,7 +49,7 @@ namespace SimpleServiceBus
             if (string.IsNullOrWhiteSpace(pattern)) pattern = "*";
 
             var queueMessage = new Message(message, new JsonFormatter());
-            var matchingQueues = new List<MessageQueue>();
+            var matchingQueues = MatchQueues(pattern);
 
             if (!string.IsNullOrWhiteSpace(label))
             {
