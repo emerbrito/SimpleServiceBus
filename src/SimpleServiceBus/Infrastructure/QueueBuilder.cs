@@ -197,8 +197,8 @@ namespace SimpleServiceBus.Infrastructure
         {
             using (MessageQueue queue = MessageQueue.Create(path, transactional))
             {
-                queue.SetPermissions(Environment.UserDomainName + "\\" + Environment.UserName, MessageQueueAccessRights.FullControl);
                 queue.SetPermissions("Administrators", MessageQueueAccessRights.FullControl);
+                queue.SetPermissions(Environment.UserDomainName + "\\" + Environment.UserName, MessageQueueAccessRights.FullControl);                
                 queue.SetPermissions("Everyone", MessageQueueAccessRights.GenericRead);
                 queue.SetPermissions("Everyone", MessageQueueAccessRights.GenericWrite);
             }
