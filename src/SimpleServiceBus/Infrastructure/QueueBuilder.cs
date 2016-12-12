@@ -198,7 +198,7 @@ namespace SimpleServiceBus.Infrastructure
             using (MessageQueue queue = MessageQueue.Create(path, transactional))
             {
                 queue.SetPermissions("Administrators", MessageQueueAccessRights.FullControl);
-                queue.SetPermissions(Environment.UserDomainName + "\\" + Environment.UserName, MessageQueueAccessRights.FullControl);                
+                queue.SetPermissions(GetLoggedInUserName(), MessageQueueAccessRights.FullControl);                
                 queue.SetPermissions("Everyone", MessageQueueAccessRights.GenericRead);
                 queue.SetPermissions("Everyone", MessageQueueAccessRights.GenericWrite);
             }
@@ -244,6 +244,23 @@ namespace SimpleServiceBus.Infrastructure
 
             if (settings.MaxQueueSize > 0)
                 queue.MaximumQueueSize = settings.MaxQueueSize;
+
+        }
+
+        private string GetLoggedInUserName()
+        {
+
+            if(Environment.UserName.ToLower() == "system")
+            {
+                return Environment.UserName; // System is always a local account.
+            }
+
+            if(Environment.UserDomainName != Environment.MachineName)
+            {
+                return Environment.UserDomainName + "\\" + Environment.UserName; // ad account
+            }
+
+            return Environment.MachineName + "\\" + Environment.UserName; // local account
 
         }
 
